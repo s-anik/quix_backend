@@ -8,6 +8,8 @@ import adminRoutes from "./routes/adminRoutes.js";
 import instructorRoutes from "./routes/instructorRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
 
+import { seed } from './scripts/seed.js';
+
 const app = express();
 
 
@@ -26,6 +28,16 @@ sequelize.sync({ alter: true }).then(() => {
 });
 
 // Routes
+// TEMPORARY - remove after seeding
+app.use('/api/seed-now', async (req, res) => {
+    try {
+        await seed();
+        res.json({ message: 'Seeded successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/instructor', instructorRoutes);
